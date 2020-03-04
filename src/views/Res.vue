@@ -1,0 +1,82 @@
+<template>
+  <div>
+    <div class="text-right bg-gray-200">
+      <router-link to="/preguntas">
+        <button class="bg-blue-901 border p-3 m-2 rounded">Añadir preguntas</button>
+      </router-link>
+      <router-link to="/equipos">
+        <button class="bg-blue-901 border p-3 m-2 rounded">Registrar equipos</button>
+      </router-link>
+    </div>
+    <div class="flex items-center h-screen justify-center bg-gray-200">
+      <div class="w-7/12 max-w-2xl">
+        <div class="mb-4">
+          <h1
+            class="text-center bg-green-400 text-white text-xl font-bold mb-2"
+          >Registro de preguntas</h1>
+        </div>
+        <form action class="bg-white shadow-md rounded px-6 pt-6 pb-8">
+          <table class="table-fixed w-full h-full">
+            <thead>
+              <tr>
+                <th
+                  class="w-4/12 px-4 py-2 bg-green-400 justify-center text-green-100 text-center"
+                >No. Grupos</th>
+                <th
+                  class="w-4/12 px-4 py-2 bg-green-400 justify-center text-green-100 text-center"
+                >Puntaje</th>
+                <th
+                  class="w-4/12 px-4 py-2 bg-green-400 justify-center text-green-100 text-center"
+                >Tiempo</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="dato in info.slice(0,5)" :key="dato.id">
+                <td class="border px-4 py-2 px-4 py-2 text-center"><strong>{{dato.id}}</strong></td>
+                <td class="border px-4 py-2 px-4 py-2 text-center">{{dato.name}}</td>
+                <td class="border px-4 py-2 px-4 py-2 text-center">{{dato.address.street}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </form>
+      </div>
+      <br />
+    </div>
+  </div>
+</template>
+
+
+<script>
+import axios from "axios";
+
+export default {
+  name: "Res",
+  data() {
+    return {
+      datos: [
+        {
+          Grupo: "1",
+          Tiempo: "x",
+          Puntaje: "50"
+        },
+        {
+          Grupo: "2",
+          Tiempo: "x",
+          Puntaje: "50"
+        }
+      ],
+      info: []
+    };
+  },
+  mounted() {
+    axios
+      .get("https://jsonplaceholder.typicode.com/users")
+      .then(response => (this.info = response.data))
+      .catch(error => {
+        console.log(error);
+        this.errored = true;
+      })
+      .finally(() => (this.loading = false));
+  }
+};
+</script>
