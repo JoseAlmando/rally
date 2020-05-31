@@ -7,22 +7,22 @@ const routes = [
   {
     path: '/',
     name: 'Login',
-    component: () => import(/* webpackChunkName: "home" */ '../views/Login.vue')
+    component: () => import(/* webpackChunkName: "Login" */ '../views/Login.vue')
   },
   {
     path: '/equipos',
-    name: 'RG',
-    component: () => import(/* webpackChunkName: "rg" */ '../views/RG.vue')
+    name: 'Equipos',
+    component: () => import(/* webpackChunkName: "Equipos" */ '../views/Equipos.vue')
   },
   {
     path: '/preguntas',
-    name: 'PR',
-    component: () => import(/* webpackChunkName: "pr" */ '../views/PR.vue')
+    name: 'Preguntas',
+    component: () => import(/* webpackChunkName: "Preguntas" */ '../views/Preguntas.vue')
   },
   {
     path: '/ganadores',
-    name: 'Res',
-    component: () => import(/* webpackChunkName: "pr" */ '../views/Res.vue')
+    name: 'Ganadores',
+    component: () => import(/* webpackChunkName: "Ganadores" */ '../views/Ganadores.vue')
   }
 ]
 
