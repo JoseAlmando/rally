@@ -64,18 +64,21 @@ export default {
         username: null,
         password: null,
       },
-      res: null,
     };
   },
   methods: {
     formSubmit(e) {
       e.preventDefault();
       axios
-        .post("http://localhost:1323/loginmaestros", this.LoginDetail)
-        .then((res) => console.log("Bien", response))
-        .catch(function(error) {
-          var errors = error.response;
-          console.log("Mal", errors);
+        .post("http://localhost:1323/api/loginmaestros", this.LoginDetail)
+        .then((res) => {
+          const token = res.data.token;
+          window.localStorage.setItem("_token", token);
+        })
+        .catch((err) => {
+          var errors = err.response;
+          console.log(errors);
+          window.localStorage.removeItem("_token");
         });
     },
   },

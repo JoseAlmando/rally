@@ -1,10 +1,6 @@
 <template>
   <div class="bg-gray-200">
-    <div class="text-right bg-gray-200">
-      <router-link to="/">
-        <button class="bg-blue-901 border p-3 m-2 rounded text-white">Acceder como administrador</button>
-      </router-link>
-    </div>
+
     <div class="md:flex justify-center items-center h-screen bg-gray-200 w-full">
       <!--  Formulario -->
       <div class="md:w-5/12 p-4 py-0">

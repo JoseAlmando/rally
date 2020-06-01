@@ -1,35 +1,60 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
+import Vue from "vue";
+import VueRouter from "vue-router";
 
-Vue.use(VueRouter)
+Vue.use(VueRouter);
 
 const routes = [
   {
-    path: '/',
-    name: 'Login',
-    component: () => import(/* webpackChunkName: "Login" */ '../views/Login.vue')
+    path: "/login",
+    name: "Login",
+    component: () =>
+      import(/* webpackChunkName: "Login" */ "../views/Login.vue"),
   },
   {
-    path: '/equipos',
-    name: 'Equipos',
-    component: () => import(/* webpackChunkName: "Equipos" */ '../views/Equipos.vue')
+    path: "/equipos",
+    name: "Equipos",
+    component: () =>
+      import(/* webpackChunkName: "Equipos" */ "../views/Equipos.vue"),
+    meta: {
+      requiresAuth: true,
+    },
   },
   {
-    path: '/preguntas',
-    name: 'Preguntas',
-    component: () => import(/* webpackChunkName: "Preguntas" */ '../views/Preguntas.vue')
+    path: "/preguntas",
+    name: "Preguntas",
+    component: () =>
+      import(/* webpackChunkName: "Preguntas" */ "../views/Preguntas.vue"),
+    meta: {
+      requiresAuth: true,
+    },
   },
   {
-    path: '/ganadores',
-    name: 'Ganadores',
-    component: () => import(/* webpackChunkName: "Ganadores" */ '../views/Ganadores.vue')
-  }
-]
+    path: "/ganadores",
+    name: "Ganadores",
+    component: () =>
+      import(/* webpackChunkName: "Ganadores" */ "../views/Ganadores.vue"),
+    meta: {
+      requiresAuth: true,
+    },
+  },
+];
 
 const router = new VueRouter({
-  mode: 'history',
+  mode: "history",
   base: process.env.BASE_URL,
-  routes
-})
+  routes,
+});
 
-export default router
+router.beforeEach((to, from, next) => {
+  if (to.matched.some((record) => record.meta.requiresAuth)) {
+    if (/*!!window.localStorage.getItem("_token")*/ true) {
+      next();
+    } else {
+      // No autenticado
+      router.replace("/login");
+    }
+  } else {
+    next();
+  }
+});
+export default router;

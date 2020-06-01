@@ -1,13 +1,6 @@
 <template>
   <div>
-    <div class="text-right bg-gray-200">
-      <router-link to="/preguntas">
-        <button class="bg-blue-901 border p-3 m-2 rounded">Añadir preguntas</button>
-      </router-link>
-      <router-link to="/equipos">
-        <button class="bg-blue-901 border p-3 m-2 rounded">Registrar equipos</button>
-      </router-link>
-    </div>
+    
     <div class="flex items-center h-screen justify-center bg-gray-200">
       <div class="w-7/12 max-w-2xl">
         <div class="mb-4">
