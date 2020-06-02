@@ -5,10 +5,17 @@ Vue.use(VueRouter);
 
 const routes = [
   {
+    path: "/",
+    name: "Inicio",
+    component: () =>
+      import(/* webpackChunkName: "Inicio" */ "../views/Inicio.vue"),
+  },
+  {
     path: "/login",
     name: "Login",
     component: () =>
       import(/* webpackChunkName: "Login" */ "../views/Login.vue"),
+      
   },
   {
     path: "/equipos",
@@ -47,7 +54,7 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   if (to.matched.some((record) => record.meta.requiresAuth)) {
-    if (/*!!window.localStorage.getItem("_token")*/ true) {
+    if (!!window.localStorage.getItem("_token")) {
       next();
     } else {
       // No autenticado

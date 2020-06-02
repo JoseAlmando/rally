@@ -1,13 +1,36 @@
 <template>
- <div class="text-right bg-gray-200">
-      <router-link to="/">
-        <button class="bg-blue-901 border p-3 m-2 rounded">Acceder como administrador</button>
-      </router-link>
-    </div>
+  <div class="text-right bg-white">
+    <router-link to="/login">
+      <button
+        v-if="isLogin == false"
+        class="bg-green-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
+        @click="logout"
+      >
+        Entar
+      </button>
+    </router-link>
+  </div>
 </template>
 
 <script>
 export default {
-  name: "Menu"
+  name: "Menu",
+  data() {
+    return {
+      isLogin: this.isLoginF(),
+    };
+  },
+  methods: {
+    isLoginF() {
+      if (!!window.localStorage.getItem("_token")) {
+        return true;
+      }
+      return false;
+    },
+    logout() {
+      window.localStorage.removeItem("_token");
+      this.$router.push("/");
+    },
+  },
 };
 </script>

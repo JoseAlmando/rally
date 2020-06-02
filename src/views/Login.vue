@@ -69,16 +69,19 @@ export default {
   methods: {
     formSubmit(e) {
       e.preventDefault();
+      console.log(this.LoginDetail)
       axios
         .post("http://localhost:1323/api/loginmaestros", this.LoginDetail)
         .then((res) => {
           const token = res.data.token;
-          window.localStorage.setItem("_token", token);
+          window.localStorage.setItem("_token", token);          
+          this.$router.push("/");
         })
         .catch((err) => {
           var errors = err.response;
           console.log(errors);
           window.localStorage.removeItem("_token");
+          alert("Usurio y/o contrase;a incorrecto.");
         });
     },
   },
