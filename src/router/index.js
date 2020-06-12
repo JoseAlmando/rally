@@ -15,7 +15,6 @@ const routes = [
     name: "Login",
     component: () =>
       import(/* webpackChunkName: "Login" */ "../views/Login.vue"),
-      
   },
   {
     path: "/equipos",
@@ -40,6 +39,15 @@ const routes = [
     name: "Ganadores",
     component: () =>
       import(/* webpackChunkName: "Ganadores" */ "../views/Ganadores.vue"),
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
+    path: "/estaciones",
+    name: "Estaciones",
+    component: () =>
+      import(/* webpackChunkName: "Estaciones" */ "../views/Estaciones.vue"),
     meta: {
       requiresAuth: true,
     },

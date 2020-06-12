@@ -1,5 +1,6 @@
 <template>
   <div>
+    <Menu />
     <div class="flex items-center h-screen justify-center bg-gray-200">
       <div class="w-7/12 max-w-2xl">
         <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 mt-10">
@@ -27,7 +28,11 @@
 </template>
 
 <script>
+import Menu from '../components/Menu'
 export default {
   name: "Inicio",
+  components:{
+    Menu
+  }
 };
 </script>
