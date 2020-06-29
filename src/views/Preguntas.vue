@@ -6,7 +6,7 @@
         class="flex justify-center items-center h-screen bg-gray-200 md:w-full"
       >
         <div class="md:w-7/12 p-2">
-          <div class="mb-4 flex justify-between">
+          <div class="mb-4 flex justify-around">
             <div class="mx-1">
               <input
                 type="radio"
@@ -18,6 +18,7 @@
                 Nueva pregunta</label
               >
             </div>
+
             <div class="mx-1">
               <input
                 type="radio"
@@ -32,23 +33,12 @@
             <div class="mx-1">
               <input
                 type="radio"
-                id="borrar_pregunta"
-                value="borrar_pregunta"
+                id="eliminar_pregunta"
+                value="eliminar_pregunta"
                 v-model="picked"
               />
-              <label for="borrar_pregunta" class="font-bold mb-2">
-                Borrar pregunta</label
-              >
-            </div>
-            <div class="mx-1">
-              <input
-                type="radio"
-                id="obtener_pregunta"
-                value="obtener_pregunta"
-                v-model="picked"
-              />
-              <label for="obtener_pregunta" class="font-bold mb-2">
-                Obtener todas las preguntas</label
+              <label for="eliminar_pregunta" class="font-bold mb-2">
+                Eliminar pregunta</label
               >
             </div>
           </div>
@@ -111,10 +101,12 @@
                   >Estación</label
                 >
                 <select
-                  required
                   v-model="EstacionID"
                   class="block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
                 >
+                  <option disabled value="">
+                    Estacion actual: {{ Estacion }}
+                  </option>
                   <option
                     v-for="elemento in estaciones"
                     v-bind:key="elemento.ID"
@@ -183,6 +175,19 @@
                 class="bg-green-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
                 type="submit"
                 value="Registrar pregunta"
+                v-if="picked == 'nueva_pregunta' && picked != null"
+              />
+              <input
+                v-if="picked == 'eliminar_pregunta' && picked != null"
+                class="bg-green-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
+                type="submit"
+                value="Eliminar"
+              />
+              <input
+                v-if="picked == 'editar_pregunta' && picked != null"
+                class="bg-green-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
+                type="submit"
+                value="Editar"
               />
             </div>
           </form>
@@ -219,6 +224,7 @@ export default {
       picked: null,
       preguntas: [],
       PregSelect: null,
+      Estacion: "Ninguna",
     };
   },
   mounted() {
@@ -240,6 +246,9 @@ export default {
     axios
       .get("http://localhost:1323/api/app/preguntas", headers)
       .then((response) => {
+        if (response.data.length <= 0) {
+          this.cantPreg = 1;
+        }
         response.data.forEach((element) => {
           this.cantPreg = parseInt(element.ID, 10);
           this.cantPreg++;
@@ -265,6 +274,21 @@ export default {
     },
     formSubmit(e) {
       e.preventDefault();
+      if (this.picked == "nueva_pregunta") {
+        this.sendQuestion();
+        this.sendAnswer4();
+        this.sendAnswer1();
+        this.sendAnswer2();
+        this.sendAnswer3();
+        alert("Pregunta insertada correctamente.");
+      } else if (this.picked == "editar_pregunta") {
+        alert("Editamos");
+      } else if (this.picked == "eliminar_pregunta") {
+        this.deleteQuestion();
+      }
+      this.defaultData();
+    },
+    sendQuestion() {
       // Enviar pregunta
       axios
         .post(
@@ -277,6 +301,8 @@ export default {
         )
         .then((response) => response.data)
         .catch((error) => this.error.push(error));
+    },
+    sendAnswer1() {
       // Enviar resp 1
       axios
         .post(
@@ -294,11 +320,17 @@ export default {
         .catch((error) => {
           this.error.push(error);
         });
+    },
+    sendAnswer2() {
       // Enviar resp 2
       axios
         .post(
           "http://localhost:1323/api/app/respuestas",
-          { Resp: this.Resp2, Valor: 0, PreguntaID: this.cantPreg },
+          {
+            Resp: this.Resp2,
+            Valor: 0,
+            PreguntaID: this.cantPreg,
+          },
           headers
         )
         .then((response) => {
@@ -307,6 +339,8 @@ export default {
         .catch((error) => {
           this.error.push(error);
         });
+    },
+    sendAnswer3() {
       // Enviar resp 3
       axios
         .post(
@@ -324,11 +358,17 @@ export default {
         .catch((error) => {
           this.error.push(error);
         });
+    },
+    sendAnswer4() {
       // Enviar resp 4
       axios
         .post(
           "http://localhost:1323/api/app/respuestas",
-          { Resp: this.Resp4, Valor: 5, PreguntaID: this.cantPreg },
+          {
+            Resp: this.Resp4,
+            Valor: 5,
+            PreguntaID: this.cantPreg,
+          },
           headers
         )
         .then((response) => {
@@ -337,27 +377,73 @@ export default {
         .catch((error) => {
           this.error.push(error);
         });
-      alert("Pregunta insertada correctamente.");
-      this.defaultData();
     },
     selectPreg(e) {
-      e.preventDefault()
+      e.preventDefault();
       this.PreguntaID = this.PregSelect;
-      console.log(this.PreguntaID)
+      console.log(this.PreguntaID);
       axios
         .get(
-          "http://localhost:1323/api/app/reguntas/:id",
-          this.PreguntaID,
+          "http://localhost:1323/api/app/preguntas/" + this.PreguntaID,
           headers
         )
         .then((res) => {
-          res.data.forEach((element) => {
-            this.Preg = element.Preg;
-          });
+          const preg = res.data;
+          this.Preg = preg.Preg;
+          axios
+            .get(
+              "http://localhost:1323/api/app/estacion/" + preg.EstacionID,
+              headers
+            )
+            .then((res) => {
+              alert("Abrir el despliegue de estaciones para ver la acual");
+              this.Estacion = res.data.nombre;
+            })
+            .catch((err) => this.error.push(err));
         })
         .catch((err) => {
-          console.log(err)
+          console.log(err);
         });
+      axios
+        .get(
+          "http://localhost:1323/api/app/preguntas/" + this.PreguntaID,
+          headers
+        )
+        .then((response) => {
+          let respuestas = response.data.Respuestas;
+          let i = 0;
+          respuestas.forEach((element) => {
+            if (element.Valor == 5) {
+              this.Resp4 = element.Resp;
+              respuestas.splice(i, 1);
+            }
+            i++;
+          });
+          this.Resp1 = respuestas[0].Resp;
+          this.Resp2 = respuestas[1].Resp;
+          this.Resp3 = respuestas[2].Resp;
+        })
+        .catch((error) => {
+          this.error.push(error);
+        });
+    },
+    deleteQuestion() {
+      this.PreguntaID = this.PregSelect;
+      axios
+        .delete(
+          "http://localhost:1323/api/app/preguntas/" + this.PreguntaID,
+          headers
+        )
+        .then((res) => {
+          console.log(res.data);
+          aler("eliminada xd");
+        })
+        .catch((error) => {
+          alert("elim");
+          this.error.push(error);
+          alert(this.error);
+        });
+      this.defaultData();
     },
   },
 };

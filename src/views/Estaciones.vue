@@ -1,5 +1,6 @@
 <template>
   <div class=" bg-gray-200">
+    <Menu />
     <div
       class="flex justify-center items-center h-screen bg-gray-200 md:w-full"
     >
@@ -63,8 +64,12 @@
 
 <script>
 import axios from "axios";
+import Menu from "../components/Menu";
 export default {
   name: "Estaciones",
+  components: {
+    Menu,
+  },
   data() {
     return {
       estacionDatos: {
@@ -94,7 +99,6 @@ export default {
           console.log(vm.response);
         })
         .catch((err) => {
-          
           vm.err.push(err);
           console.log(vm.err);
         });

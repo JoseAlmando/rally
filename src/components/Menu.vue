@@ -39,6 +39,16 @@
         >
       </div>
       <div class="mx-1">
+        <router-link to="/estaciones"
+          ><button
+            class="bg-green-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            @click="isLoginF2"
+          >
+            Estaciones
+          </button></router-link
+        >
+      </div>
+      <div class="mx-1">
         <router-link to="/login">
           <button
             v-if="isLogin == false"
