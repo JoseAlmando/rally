@@ -96,7 +96,8 @@ export default {
         )
         .then((res) => {
           vm.response = res.data;
-          console.log(vm.response);
+         alert("Estacion insertada");
+         console.log(vm.response);
         })
         .catch((err) => {
           vm.err.push(err);
