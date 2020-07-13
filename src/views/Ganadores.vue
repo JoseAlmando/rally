@@ -87,6 +87,10 @@ export default {
       .catch((error) => {
         console.log(error);
         this.errored = true;
+        if (error.response.status == 401) {
+          alert("Cierra e inicia seccion");
+          window.localStorage.removeItem("_token");
+        }
       })
       .finally(() => (this.loading = false));
   },

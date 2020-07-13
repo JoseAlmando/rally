@@ -204,7 +204,7 @@
               <input
                 class="bg-green-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
                 type="submit"
-                value="Registrar pregunta"
+                value="Registrar"
                 v-if="picked == 'nueva_pregunta' && picked != null"
               />
               <input
@@ -289,6 +289,10 @@ export default {
       })
       .catch((error) => {
         this.error.push(error);
+        if (error.response.status == 401) {
+          alert("Cierra e inicia seccion");
+          window.localStorage.removeItem("_token");
+        }
       });
   },
   methods: {
@@ -306,7 +310,7 @@ export default {
     selectPreg(e) {
       e.preventDefault();
       this.PreguntaID = this.PregSelect;
-      console.log(this.PreguntaID);
+
       axios
         .get(
           "http://localhost:1323/api/app/preguntas/" + this.PreguntaID,
@@ -327,7 +331,7 @@ export default {
             .catch((err) => this.error.push(err));
         })
         .catch((err) => {
-          console.log(err);
+          this.error.push(err);
         });
       axios
         .get(
@@ -338,7 +342,7 @@ export default {
           let respuestas = response.data.Respuestas;
           this.respuestas2 = respuestas;
           let i = 0;
-          console.log(respuestas);
+
           respuestas.forEach((element) => {
             if (element.Valor == 5) {
               this.Resp4 = element.Resp;
@@ -386,6 +390,7 @@ export default {
         this.updateAnswer1();
         alert("Editamos");
       } else if (this.picked == "eliminar_pregunta") {
+        this.deleteQuestion();
       }
       this.defaultData();
       this.$forceUpdate();
@@ -489,13 +494,11 @@ export default {
           headers
         )
         .then((res) => {
-          console.log(res.data);
-          aler("eliminada xd");
+          alert("eliminada xd");
         })
         .catch((error) => {
           alert("elim");
           this.error.push(error);
-          console.log(this.error);
         });
       this.defaultData();
       this.$forceUpdate();
@@ -511,19 +514,16 @@ export default {
           },
           headers
         )
-        .then((res) => {
-          console.log(res.data);
-        })
+        .then((res) => res.data)
         .catch((err) => {
           this.error.push(err);
-          console.log(this.error);
         });
     },
     updateAnswer4() {
       // Enviar resp 4
       axios
         .put(
-          "http://localhost:1323/api/app/respuestas/"+ this.preguntasId[0],
+          "http://localhost:1323/api/app/respuestas/" + this.preguntasId[0],
           {
             Resp: this.Resp4,
             Valor: 5,
@@ -542,7 +542,7 @@ export default {
       // Enviar resp 3
       axios
         .put(
-          "http://localhost:1323/api/app/respuestas/"+ this.preguntasId[3],
+          "http://localhost:1323/api/app/respuestas/" + this.preguntasId[3],
           {
             Resp: this.Resp3,
             Valor: 0,
@@ -561,7 +561,7 @@ export default {
       // Enviar resp 2
       axios
         .put(
-          "http://localhost:1323/api/app/respuestas/"+ this.preguntasId[2],
+          "http://localhost:1323/api/app/respuestas/" + this.preguntasId[2],
           {
             Resp: this.Resp2,
             Valor: 0,
@@ -580,7 +580,7 @@ export default {
       // Enviar resp 1
       axios
         .put(
-          "http://localhost:1323/api/app/respuestas/"+ this.preguntasId[1],
+          "http://localhost:1323/api/app/respuestas/" + this.preguntasId[1],
           {
             Resp: this.Resp1,
             Valor: 0,

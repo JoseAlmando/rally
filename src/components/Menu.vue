@@ -1,5 +1,5 @@
 <template>
-  <div class="flex justify-between items-center px-4 bg-white mt-2 mb-2">
+  <div class="flex justify-between items-center px-4 pb-2 bg-white mt-2 mb-2">
     <div>
       <router-link to="/">
         <h1 class="text-center text-green-500 text-2xl font-bold">
