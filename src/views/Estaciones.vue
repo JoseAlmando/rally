@@ -181,7 +181,7 @@ export default {
       })
       .catch((err) => {
         this.error.push(err);
-       if (error.response.status == 401) {
+        if (error.response.status == 401) {
           alert("Cierra e inicia seccion");
           window.localStorage.removeItem("_token");
         }
@@ -210,7 +210,8 @@ export default {
         .then((res) => {
           this.response = res.data;
           alert("Estacion insertada");
-        })
+          refreshData();
+          })
         .catch((err) => {
           this.err.push(err);
         });
@@ -241,7 +242,10 @@ export default {
           this.estacionDatos,
           headers
         )
-        .then((res) => res.data)
+        .then((res) => {
+          res.data;
+          refreshData();
+        })
         .catch((err) => this.err.push(err));
     },
     deleteEstacion() {
@@ -250,9 +254,25 @@ export default {
           "http://localhost:1323/api/app/estacion/" + this.EstacionSeleccionada,
           headers
         )
-        .then((res) => alert("estacion eliminada" + res.response.status))
+        .then(
+          (res) => {
+            alert("estacion eliminada " + res.response.status);
+            refreshData();
+          }
+        )
         .catch((err) => this.error.push(err));
     },
+    refreshData() {
+      axios.get("http://localhost:1323/api/app/estacion", headers)
+      .then((response) => {
+        response.data.forEach((element) => {
+          this.estaciones.push({
+            ID: element.ID,
+            Estacion: element.nombre,
+          });
+        });
+      })
+    }
   },
 };
 </script>

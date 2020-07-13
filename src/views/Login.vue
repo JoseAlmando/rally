@@ -83,6 +83,7 @@ export default {
         .post("http://localhost:1323/api/loginmaestros", this.LoginDetail)
         .then((res) => {
           const token = res.data.token;
+          window.localStorage.removeItem("_token");
           window.localStorage.setItem("_token", token);
           this.$router.push("/");
         })
@@ -90,7 +91,7 @@ export default {
           var errors = err.response;
           console.log(errors);
           window.localStorage.removeItem("_token");
-          alert("Usurio y/o contrase;a incorrecto.");
+          alert("Usuario y/o contrase;a incorrecto.");
         });
     },
   },
