@@ -2,7 +2,9 @@
   <div class=" bg-gray-200">
     <Menu />
     <div class="flex justify-center items-center flex-col h-screen md:w-full">
+    
       <div class="mb-2 flex justify-around w-8/12">
+      
         <div class="mx-1">
           <input
             type="radio"
@@ -100,6 +102,7 @@
             >
             <textarea
               required
+              :maxlength="250"
               class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="DescripcionEstacion"
               placeholder="Datos sobre la estacion"
@@ -108,7 +111,7 @@
           </div>
 
           <div class="flex justify-around">
-            <div class="w-8/12">
+            <div class="w-full">
               <input
                 class="bg-green-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
                 type="submit"
@@ -129,13 +132,13 @@
               />
             </div>
 
-            <button
+            <!-- <button
               class="bg-green-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-4/12 mx-1"
               @click="dataDefault"
               type="button"
             >
               Limpiar formulario
-            </button>
+            </button> -->
           </div>
         </form>
       </div>
@@ -180,11 +183,13 @@ export default {
         });
       })
       .catch((err) => {
-        this.error.push(err);
-        if (error.response.status == 401) {
+        console.log("A ver " + err.response.status);
+        if (err.response.status == 401) {
           alert("Cierra e inicia seccion");
           window.localStorage.removeItem("_token");
+         
         }
+        this.err.push(err);
       });
   },
   methods: {
@@ -193,11 +198,21 @@ export default {
       if (this.picked == "nueva_estacion") {
         this.sendEstacion();
       } else if (this.picked == "editar_estacion") {
-        this.updateEstacion();
-        alert("actuzli");
+        if (this.EstacionSeleccionada != null) {
+          this.updateEstacion();
+          alert("actuzli");
+        } else {
+          alert("Debes seleccionar una estacion");
+        }
       } else if (this.picked == "eliminar_estacion") {
-        this.deleteEstacion();
+        if (this.EstacionSeleccionada != null) {
+          this.deleteEstacion();
+          alert("ELiminada");
+        } else {
+          alert("Debes seleccionar una estacion");
+        }
       }
+
       this.$forceUpdate();
     },
     sendEstacion() {
@@ -209,9 +224,11 @@ export default {
         )
         .then((res) => {
           this.response = res.data;
-          alert("Estacion insertada");
-          refreshData();
-          })
+          console.log(this.response);
+          alert("Estacion insertada brou");
+          this.refreshData();
+          this.dataDefault();
+        })
         .catch((err) => {
           this.err.push(err);
         });
@@ -244,7 +261,7 @@ export default {
         )
         .then((res) => {
           res.data;
-          refreshData();
+          this.refreshData();
         })
         .catch((err) => this.err.push(err));
     },
@@ -254,25 +271,27 @@ export default {
           "http://localhost:1323/api/app/estacion/" + this.EstacionSeleccionada,
           headers
         )
-        .then(
-          (res) => {
-            alert("estacion eliminada " + res.response.status);
-            refreshData();
-          }
-        )
-        .catch((err) => this.error.push(err));
+        .then((res) => {
+          this.refreshData();
+          this.dataDefault();
+        })
+        .catch((err) => {
+          this.err.push(err);
+        });
     },
     refreshData() {
-      axios.get("http://localhost:1323/api/app/estacion", headers)
-      .then((response) => {
-        response.data.forEach((element) => {
-          this.estaciones.push({
-            ID: element.ID,
-            Estacion: element.nombre,
+      axios
+        .get("http://localhost:1323/api/app/estacion", headers)
+        .then((response) => {
+          this.estaciones = [];
+          response.data.forEach((element) => {
+            this.estaciones.push({
+              ID: element.ID,
+              Estacion: element.nombre,
+            });
           });
         });
-      })
-    }
+    },
   },
 };
 </script>

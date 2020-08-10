@@ -2,56 +2,81 @@
   <div>
     <Menu />
     <div class="bg-gray-200">
-      
       <div
         class="flex justify-center flex-col items-center h-screen bg-gray-200 md:w-full"
       >
-      <div>
-        <div class="mb-2 flex justify-around">
-            <div class="mx-1">
-              <input
-                type="radio"
-                id="nueva_pregunta"
-                value="nueva_pregunta"
-                v-model="picked"
-              />
-              <label for="nueva_pregunta" class="font-bold mb-2">
-                Nueva pregunta</label
-              >
-            </div>
-
-            <div class="mx-1">
-              <input
-                type="radio"
-                id="editar_pregunta"
-                value="editar_pregunta"
-                v-model="picked"
-              />
-              <label for="editar_pregunta" class="font-bold mb-2">
-                Editar pregunta</label
-              >
-            </div>
-            <div class="mx-1">
-              <input
-                type="radio"
-                id="eliminar_pregunta"
-                value="eliminar_pregunta"
-                v-model="picked"
-              />
-              <label for="eliminar_pregunta" class="font-bold mb-2">
-                Eliminar pregunta</label
-              >
-            </div>
+        <div class="mb-2 flex justify-between w-6/12">
+          <div class="mx-1">
+            <input
+              type="radio"
+              id="nuevo_equipo"
+              value="nuevo_equipo"
+              v-model="picked"
+            />
+            <label for="nuevo_equipo" class="font-bold mb-2">
+              Nuevo equipo</label
+            >
           </div>
-      </div>
+
+          <div class="mx-1">
+            <input
+              type="radio"
+              id="editar_equipo"
+              value="editar_equipo"
+              v-model="picked"
+            />
+            <label for="editar_equipo" class="font-bold mb-2">
+              Editar equipo</label
+            >
+          </div>
+
+          <div class="mx-1">
+            <input
+              type="radio"
+              id="eliminar_equipo"
+              value="eliminar_equipo"
+              v-model="picked"
+            />
+            <label for="eliminar_equipo" class="font-bold mb-2">
+              Eliminar equipo</label
+            >
+          </div>
+        </div>
+
+        <!--  -->
+        <div
+          v-if="picked != 'nuevo_equipo' && picked != null"
+          class="flex justify-around w-6/12"
+        >
+          <select
+            required
+            v-model="equipoSeleccionado"
+            class="block appearance-none w-8/12 bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
+          >
+            <option
+              v-for="equipo in equipos"
+              v-bind:key="equipo.ID"
+              v-bind:value="equipo.ID"
+            >
+              <span> {{ equipo.ID }} - {{ equipo.Matriculas }} </span>
+            </option>
+          </select>
+          <button
+            class="bg-green-500 w-3/12 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            @click="selectEquipo"
+          >
+            Seleccionar
+          </button>
+        </div>
+        <!--  -->
         <div class="md:flex ">
           <!--  Formulario -->
           <div class="md:w-4/7 p-4 py-0">
             <form
-              @submit="registrarEquipo"
+              @submit="formSubmit"
               action
               method="post"
-              class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 mt-10"
+              class="bg-white shadow-md rounded px-8 pt-6 pb-10 mb-4 mt-10"
             >
               <div class="mb-4">
                 <h1 class="text-center text-green-500 text-xl font-bold mb-2">
@@ -95,9 +120,22 @@
               </div>
               <div class="mb-2">
                 <input
+                  v-if="picked == 'nuevo_equipo' && picked != null"
                   class="bg-green-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
                   type="submit"
                   value="Crear equipo"
+                />
+                <input
+                  v-if="picked == 'editar_equipo' && picked != null"
+                  class="bg-green-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
+                  type="submit"
+                  value="Editar equipo"
+                />
+                <input
+                  v-if="picked == 'eliminar_equipo' && picked != null"
+                  class="bg-green-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
+                  type="submit"
+                  value="Eliminar equipo"
                 />
               </div>
             </form>
@@ -127,13 +165,6 @@
             <p class="text-center text-red-901 text-xl font-bold mb-2">
               [ {{ nogrupo }} ]
             </p>
-
-            <button
-            class="bg-green-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full" @click="this.defaultData" v-if="this.nogrupo != 0" 
-          >
-            Nuevo grupo
-          </button>
-
           </div>
         </div>
       </div>
@@ -165,20 +196,43 @@ export default {
       },
       nogrupo: 0,
       maxv: 9,
-      respuesta: [],
       err: [],
       picked: null,
+      equipoSeleccionado: null,
+
+      equipos: [],
     };
+  },
+  mounted() {
+    axios
+      .get("http://localhost:1323/api/app/equipo", headers)
+      .then((response) => {
+        response.data.forEach((element) => {
+          this.equipos.push({
+            ID: element.ID,
+            Matriculas:
+              element.MatriculaE1 +
+              " " +
+              element.MatriculaE2 +
+              " " +
+              element.MatriculaE3,
+          });
+        });
+      })
+      .catch((err) => {
+        this.err.push(err);
+        console.log("A ver " + err.response.status);
+        if (err.response.status == 401) {
+          alert("Cierra e inicia seccion");
+          window.localStorage.removeItem("_token");
+        }
+      });
   },
   methods: {
     defaultData() {
       this.equipoDetalle.MatriculaE1 = null;
       this.equipoDetalle.MatriculaE2 = null;
       this.equipoDetalle.MatriculaE3 = null;
-      this.equipoDetalle.CodigoGrupo = null;
-      this.equipoDetalle.ContraGrupo = null;
-      this.nogrupo = 0;
-
     },
     generearUser() {
       if (this.equipoDetalle.MatriculaE1 && this.equipoDetalle.MatriculaE2) {
@@ -212,11 +266,20 @@ export default {
         );
       }
     },
-    registrarEquipo(e) {
+    formSubmit(e) {
       e.preventDefault();
+      if (this.picked == "nuevo_equipo") {
+        this.sendEquipo();
+      } else if (this.picked == "editar_equipo") {
+        this.updateEquipo();
+      } else if (this.picked == "eliminar_equipo") {
+        this.deleteEquipos();
+      }
+      this.$forceUpdate();
+    },
+    sendEquipo() {
       this.equipoDetalle.CodigoGrupo = this.generearUser();
       this.equipoDetalle.ContraGrupo = "pa" + this.generearUser() + "as";
-      const token = window.localStorage.getItem("_token");
       axios
         .post(
           "http://localhost:1323/api/app/equipo",
@@ -224,16 +287,84 @@ export default {
           headers
         )
         .then((res) => {
-          this.respuesta = res.data;
           this.nogrupo = parseInt(res.data.ID, 10);
-          console.log(this.respuesta);
+          this.refreshData();
+          this.defaultData();
+          alert("Equipo insertado correctamente.");
         })
         .catch((err) => {
           this.err.push(err);
-          if (err.response.status == 401) {
-          alert("Cierra e inicia seccion");
-          window.localStorage.removeItem("_token");
-        }
+        });
+    },
+    selectEquipo() {
+      console.log(this.equipoSeleccionado);
+      axios
+        .get(
+          "http://localhost:1323/api/app/equipo/" + this.equipoSeleccionado,
+          headers
+        )
+        .then((res) => {
+          let eq = res.data;
+          this.equipoDetalle.MatriculaE1 = eq.MatriculaE1;
+          this.equipoDetalle.MatriculaE2 = eq.MatriculaE2;
+          this.equipoDetalle.MatriculaE3 = eq.MatriculaE3;
+          this.equipoDetalle.CodigoGrupo = eq.CodigoGrupo;
+          this.equipoDetalle.ContraGrupo = eq.ContraGrupo;
+          console.log(eq);
+        })
+        .catch((err) => {
+          this.err.push(err);
+        });
+    },
+    deleteEquipos() {
+      axios
+        .delete(
+          "http://localhost:1323/api/app/equipo/" + this.equipoSeleccionado,
+          headers
+        )
+        .then((res) => {
+          this.defaultData();
+          this.equipoDetalle.CodigoGrupo = null;
+          this.equipoDetalle.ContraGrupo = null;
+          this.nogrupo = 0;
+          this.refreshData();
+          alert("Equipo eliminado.");
+        })
+        .catch((err) => err.response.status);
+    },
+    updateEquipo() {
+      axios
+        .put(
+          "http://localhost:1323/api/app/equipo/" + this.equipoSeleccionado,
+          this.equipoDetalle,
+          headers
+        )
+        .then((res) => {
+          this.defaultData();
+          this.equipoDetalle.CodigoGrupo = null;
+          this.equipoDetalle.ContraGrupo = null;
+          this.nogrupo = 0;
+          this.refreshData();
+          alert("Equipo modificado.");
+        })
+        .catch((err) => err.response.status);
+    },
+    refreshData() {
+      axios
+        .get("http://localhost:1323/api/app/equipo", headers)
+        .then((response) => {
+          this.equipos = [];
+          response.data.forEach((element) => {
+            this.equipos.push({
+              ID: element.ID,
+              Matriculas:
+                element.MatriculaE1 +
+                " " +
+                element.MatriculaE2 +
+                " " +
+                element.MatriculaE3,
+            });
+          });
         });
     },
   },

@@ -289,6 +289,7 @@ export default {
       })
       .catch((error) => {
         this.error.push(error);
+        console.log(error);
         if (error.response.status == 401) {
           alert("Cierra e inicia seccion");
           window.localStorage.removeItem("_token");
