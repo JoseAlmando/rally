@@ -5,7 +5,7 @@
       <div
         class="flex justify-center flex-col items-center h-screen bg-gray-200 md:w-full"
       >
-        <div class="mb-2 flex justify-between w-6/12">
+        <div class="mb-2 flex justify-between w-4/12">
           <div class="mx-1">
             <input
               type="radio"
@@ -18,7 +18,7 @@
             >
           </div>
 
-          <div class="mx-1">
+          <!-- <div class="mx-1">
             <input
               type="radio"
               id="editar_equipo"
@@ -28,7 +28,7 @@
             <label for="editar_equipo" class="font-bold mb-2">
               Editar equipo</label
             >
-          </div>
+          </div> -->
 
           <div class="mx-1">
             <input
@@ -85,6 +85,7 @@
               </div>
               <div class="mb-4">
                 <the-mask
+masked
                   mask="####-####"
                   required
                   v-model="equipoDetalle.MatriculaE1"
@@ -97,6 +98,7 @@
               </div>
               <div class="mb-4">
                 <the-mask
+masked
                   mask="####-####"
                   required
                   v-model="equipoDetalle.MatriculaE2"
@@ -108,7 +110,8 @@
                 />
               </div>
               <div class="mb-4">
-                <the-mask
+                <the-mask 
+		masked 
                   mask="####-####"
                   v-model="equipoDetalle.MatriculaE3"
                   :maxlength="maxv"
@@ -271,13 +274,15 @@ export default {
       if (this.picked == "nuevo_equipo") {
         this.sendEquipo();
       } else if (this.picked == "editar_equipo") {
-        this.updateEquipo();
+        // this.updateEquipo();
       } else if (this.picked == "eliminar_equipo") {
         this.deleteEquipos();
+        alert("Equipo eliminado.");
       }
       this.$forceUpdate();
     },
     sendEquipo() {
+		
       this.equipoDetalle.CodigoGrupo = this.generearUser();
       this.equipoDetalle.ContraGrupo = "pa" + this.generearUser() + "as";
       axios
@@ -310,6 +315,7 @@ export default {
           this.equipoDetalle.MatriculaE3 = eq.MatriculaE3;
           this.equipoDetalle.CodigoGrupo = eq.CodigoGrupo;
           this.equipoDetalle.ContraGrupo = eq.ContraGrupo;
+          this.nogrupo = eq.ID;
           console.log(eq);
         })
         .catch((err) => {
@@ -328,27 +334,29 @@ export default {
           this.equipoDetalle.ContraGrupo = null;
           this.nogrupo = 0;
           this.refreshData();
-          alert("Equipo eliminado.");
         })
         .catch((err) => err.response.status);
     },
-    updateEquipo() {
-      axios
-        .put(
-          "http://localhost:1323/api/app/equipo/" + this.equipoSeleccionado,
-          this.equipoDetalle,
-          headers
-        )
-        .then((res) => {
-          this.defaultData();
-          this.equipoDetalle.CodigoGrupo = null;
-          this.equipoDetalle.ContraGrupo = null;
-          this.nogrupo = 0;
-          this.refreshData();
-          alert("Equipo modificado.");
-        })
-        .catch((err) => err.response.status);
-    },
+    // updateEquipo() {
+    //   axios
+    //     .put(
+    //       "http://localhost:1323/api/app/equipo/" + this.equipoSeleccionado,
+    //       this.equipoDetalle,
+    //       headers
+    //     )
+    //     .then((res) => {
+    //       this.defaultData();
+    //       this.equipoDetalle.CodigoGrupo = null;
+    //       this.equipoDetalle.ContraGrupo = null;
+    //       this.nogrupo = 0;
+    //       this.refreshData();
+    //       alert("Equipo modificado.");
+    //     })
+    //     .catch((err) => err.response.status);
+    //   this.deleteEquipos();
+    //   this.sendEquipo();
+    //   alert("Equipo modificado.");
+    // },
     refreshData() {
       axios
         .get("http://localhost:1323/api/app/equipo", headers)

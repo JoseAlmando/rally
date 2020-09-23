@@ -3,6 +3,8 @@ import VueRouter from "vue-router";
 
 Vue.use(VueRouter);
 
+const DEFAULT_TITLE = 'ITESA RALLY';
+
 const routes = [
   {
     path: "/",
@@ -15,6 +17,10 @@ const routes = [
     name: "Login",
     component: () =>
       import(/* webpackChunkName: "Login" */ "../views/Login.vue"),
+	  meta:{
+		  title: 'Login - ' + DEFAULT_TITLE,
+	  }
+
   },
   {
     path: "/equipos",
@@ -23,7 +29,8 @@ const routes = [
       import(/* webpackChunkName: "Equipos" */ "../views/Equipos.vue"),
     meta: {
       requiresAuth: true,
-    },
+                  title: 'Equipos - ' + DEFAULT_TITLE,
+  },
   },
   {
     path: "/preguntas",
@@ -32,6 +39,7 @@ const routes = [
       import(/* webpackChunkName: "Preguntas" */ "../views/Preguntas.vue"),
     meta: {
       requiresAuth: true,
+	     title: 'Preguntas - ' + DEFAULT_TITLE,
     },
   },
   {
@@ -41,6 +49,7 @@ const routes = [
       import(/* webpackChunkName: "Ganadores" */ "../views/Ganadores.vue"),
     meta: {
       requiresAuth: true,
+	     title: 'Ganadores - ' + DEFAULT_TITLE,
     },
   },
   {
@@ -50,6 +59,7 @@ const routes = [
       import(/* webpackChunkName: "Estaciones" */ "../views/Estaciones.vue"),
     meta: {
       requiresAuth: true,
+	     title: 'Estaciones - ' + DEFAULT_TITLE,
     },
   },
 ];
@@ -58,6 +68,10 @@ const router = new VueRouter({
   mode: "history",
   base: process.env.BASE_URL,
   routes,
+});
+
+router.afterEach((to, from) => {
+    document.title = to.meta.title || DEFAULT_TITLE;
 });
 
 router.beforeEach((to, from, next) => {

@@ -118,93 +118,66 @@
                 </select>
               </div>
             </div>
+            <div>
+              <label
+                class="block text-gray-700 text-md font-bold mb-2"
+                for="estacion"
+                >Respuestas incorrectas</label
+              >
 
+              <div class="flex justify-between mb-4">
+                <div class="w-4/12 mr-2">
+                  <input
+                    required
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    id="respuesta_1"
+                    v-model="Resp1"
+                    type="text"
+                    placeholder="Respuesta incorrecta 1"
+                  />
+                </div>
+                <div class="w-4/12">
+                  <input
+                    required
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    id="respuesta_2"
+                    v-model="Resp2"
+                    type="text"
+                    placeholder="Respuesta incorrecta 2"
+                  />
+                </div>
+                <div class="w-4/12 ml-2">
+                  <input
+                    required
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    id="respuesta_3"
+                    v-model="Resp3"
+                    type="text"
+                    placeholder="Respuesta incorrecta 3"
+                  />
+                </div>
+              </div>
+              <div class="mb-4">
+                <label
+                  class="block text-gray-700 text-md font-bold mb-2"
+                  for="estacion"
+                  >Respuesta Correcta</label
+                >
+                <input
+                  required
+                  class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  id="respuesta_4"
+                  v-model="Resp4"
+                  type="text"
+                  placeholder="Respuesta correcta"
+                />
+              </div>
+            </div>
             <div class>
               <input
                 class="bg-green-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
                 type="submit"
                 value="Registrar pregunta"
-                v-if="picked == 'nueva_pregunta' && picked != null"
-              />
-              <input
-                v-if="picked == 'eliminar_pregunta' && picked != null"
-                class="bg-green-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
-                type="submit"
-                value="Eliminar"
-              />
-              <input
-                v-if="picked == 'editar_pregunta' && picked != null"
-                class="bg-green-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
-                type="submit"
-                value="Editar"
-              />
-            </div>
-          </form>
-
-          <form
-            method="post"
-            action
-            @submit="formSubmitResponse"
-            class="bg-white shadow-xl rounded px-8 pt-6 pb-8 mb-2 mt-8"
-          >
-            <label
-              class="block text-gray-700 text-md font-bold mb-2"
-              for="estacion"
-              >Respuestas incorrectas</label
-            >
-
-            <div class="flex justify-between mb-4">
-              <div class="w-4/12 mr-2">
-                <input
-                  required
-                  class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  id="respuesta_1"
-                  v-model="Resp1"
-                  type="text"
-                  placeholder="Respuesta incorrecta 1"
-                />
-              </div>
-              <div class="w-4/12">
-                <input
-                  required
-                  class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  id="respuesta_2"
-                  v-model="Resp2"
-                  type="text"
-                  placeholder="Respuesta incorrecta 2"
-                />
-              </div>
-              <div class="w-4/12 ml-2">
-                <input
-                  required
-                  class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  id="respuesta_3"
-                  v-model="Resp3"
-                  type="text"
-                  placeholder="Respuesta incorrecta 3"
-                />
-              </div>
-            </div>
-            <div class="mb-4">
-              <label
-                class="block text-gray-700 text-md font-bold mb-2"
-                for="estacion"
-                >Respuesta Correcta</label
-              >
-              <input
-                required
-                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                id="respuesta_4"
-                v-model="Resp4"
-                type="text"
-                placeholder="Respuesta correcta"
-              />
-            </div>
-            <div class>
-              <input
-                class="bg-green-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
-                type="submit"
-                value="Registrar"
                 v-if="picked == 'nueva_pregunta' && picked != null"
               />
               <input
@@ -289,10 +262,11 @@ export default {
       })
       .catch((error) => {
         this.error.push(error);
-        console.log(error);
+        console.log(this.error);
         if (error.response.status == 401) {
           alert("Cierra e inicia seccion");
           window.localStorage.removeItem("_token");
+          error = [];
         }
       });
   },
@@ -308,11 +282,12 @@ export default {
       this.error = [];
       this.response = [];
     },
-    selectPreg(e) {
+
+    async selectPreg(e) {
       e.preventDefault();
       this.PreguntaID = this.PregSelect;
-
-      axios
+      this.preguntasId = [];
+      await axios
         .get(
           "http://localhost:1323/api/app/preguntas/" + this.PreguntaID,
           headers
@@ -340,10 +315,10 @@ export default {
           headers
         )
         .then((response) => {
+          
           let respuestas = response.data.Respuestas;
           this.respuestas2 = respuestas;
           let i = 0;
-
           respuestas.forEach((element) => {
             if (element.Valor == 5) {
               this.Resp4 = element.Resp;
@@ -362,43 +337,27 @@ export default {
         .catch((error) => {
           this.error.push(error);
         });
+        
+      console.log(this.preguntasId, "asdas");
     },
-    formSubmitQuestion(e) {
+
+    async formSubmitQuestion(e) {
       e.preventDefault();
       if (this.picked == "nueva_pregunta") {
-        this.sendQuestion();
+        await this.sendQuestion();
         alert("Pregunta insertada correctamente.");
       } else if (this.picked == "editar_pregunta") {
-        this.updateQuestion();
+        await this.updateQuestion();
         alert("Editamos");
       } else if (this.picked == "eliminar_pregunta") {
-        this.deleteQuestion();
+        await this.deleteQuestion();
       }
-      this.$forceUpdate();
+      this.refreshData();
     },
-    formSubmitResponse(e) {
-      e.preventDefault();
-      if (this.picked == "nueva_pregunta") {
-        this.sendAnswer1();
-        this.sendAnswer2();
-        this.sendAnswer3();
-        this.sendAnswer4();
-        alert("Respuestas insertadas correctamente.");
-      } else if (this.picked == "editar_pregunta") {
-        this.updateAnswer4();
-        this.updateAnswer3();
-        this.updateAnswer2();
-        this.updateAnswer1();
-        alert("Editamos");
-      } else if (this.picked == "eliminar_pregunta") {
-        this.deleteQuestion();
-      }
-      this.defaultData();
-      this.$forceUpdate();
-    },
-    sendQuestion() {
+
+    async sendQuestion() {
       // Enviar pregunta
-      axios
+      await axios
         .post(
           "http://localhost:1323/api/app/preguntas",
           {
@@ -407,84 +366,60 @@ export default {
           },
           headers
         )
-        .then((response) => response.data)
+        .then((response) => {
+          console.log(response.data);
+          var ID = response.data.ID;
+          // Send the first Answer
+          axios
+            .post(
+              "http://localhost:1323/api/app/respuestas",
+              {
+                Resp: this.Resp1,
+                Valor: 0,
+                PreguntaID: ID,
+              },
+              headers
+            )
+            .then((res) => res.data);
+          //Send the second Answer
+          axios
+            .post(
+              "http://localhost:1323/api/app/respuestas",
+              {
+                Resp: this.Resp2,
+                Valor: 0,
+                PreguntaID: ID,
+              },
+              headers
+            )
+            .then((res) => res.data);
+          //Send the thirty Answer
+          axios
+            .post(
+              "http://localhost:1323/api/app/respuestas",
+              {
+                Resp: this.Resp3,
+                Valor: 0,
+                PreguntaID: ID,
+              },
+              headers
+            )
+            .then((res) => res.data);
+          //Send the Fourth Answer
+          axios
+            .post(
+              "http://localhost:1323/api/app/respuestas",
+              {
+                Resp: this.Resp4,
+                Valor: 5,
+                PreguntaID: ID,
+              },
+              headers
+            )
+            .then((res) => res.data);
+        })
         .catch((error) => this.error.push(error));
-    },
-    sendAnswer1() {
-      // Enviar resp 1
-      axios
-        .post(
-          "http://localhost:1323/api/app/respuestas",
-          {
-            Resp: this.Resp1,
-            Valor: 0,
-            PreguntaID: this.cantPreg,
-          },
-          headers
-        )
-        .then((response) => {
-          let res = response.data;
-        })
-        .catch((error) => {
-          this.error.push(error);
-        });
-    },
-    sendAnswer2() {
-      // Enviar resp 2
-      axios
-        .post(
-          "http://localhost:1323/api/app/respuestas",
-          {
-            Resp: this.Resp2,
-            Valor: 0,
-            PreguntaID: this.cantPreg,
-          },
-          headers
-        )
-        .then((response) => {
-          let res = response.data;
-        })
-        .catch((error) => {
-          this.error.push(error);
-        });
-    },
-    sendAnswer3() {
-      // Enviar resp 3
-      axios
-        .post(
-          "http://localhost:1323/api/app/respuestas",
-          {
-            Resp: this.Resp3,
-            Valor: 0,
-            PreguntaID: this.cantPreg,
-          },
-          headers
-        )
-        .then((response) => {
-          let res = response.data;
-        })
-        .catch((error) => {
-          this.error.push(error);
-        });
-    },
-    sendAnswer4() {
-      // Enviar resp 4
-      axios
-        .post(
-          "http://localhost:1323/api/app/respuestas",
-          {
-            Resp: this.Resp4,
-            Valor: 5,
-            PreguntaID: this.cantPreg,
-          },
-          headers
-        )
-        .then((response) => {
-          let res = response.data;
-        })
-        .catch((error) => {
-          this.error.push(error);
-        });
+      this.defaultData();
     },
 
     deleteQuestion() {
@@ -502,11 +437,11 @@ export default {
           this.error.push(error);
         });
       this.defaultData();
-      this.$forceUpdate();
     },
-    updateQuestion() {
+
+    async updateQuestion() {
       this.PreguntaID = this.PregSelect;
-      axios
+      await axios
         .put(
           "http://localhost:1323/api/app/preguntas/" + this.PreguntaID,
           {
@@ -515,89 +450,77 @@ export default {
           },
           headers
         )
-        .then((res) => res.data)
+        .then((res) => {
+          console.log(this.preguntasId[0], "p4");
+          axios
+            .put(
+              "http://localhost:1323/api/app/respuestas/" +  parseInt(this.preguntasId[0],10),
+              {
+                Resp: this.Resp4,
+                Valor: 5,
+                PreguntaID: this.PreguntaID,
+              },
+              headers
+            )
+            .then((response) => response.data);
+          //
+          console.log(this.preguntasId[3], "p3");
+
+          axios
+            .put(
+              "http://localhost:1323/api/app/respuestas/" +  parseInt(this.preguntasId[3],10),
+              {
+                Resp: this.Resp3,
+                Valor: 0,
+                PreguntaID: this.PreguntaID,
+              },
+              headers
+            )
+            .then((response) => response.data);
+          //
+
+          console.log(this.preguntasId[2], "p2");
+
+          axios
+            .put(
+              "http://localhost:1323/api/app/respuestas/" +  parseInt(this.preguntasId[2],10),
+              {
+                Resp: this.Resp2,
+                Valor: 0,
+                PreguntaID: this.PreguntaID,
+              },
+              headers
+            )
+            .then((response) => response.data);
+          //
+          console.log(this.preguntasId[1], "p1");
+          axios
+            .put(
+              "http://localhost:1323/api/app/respuestas/" +  parseInt(this.preguntasId[1],10),
+              {
+                Resp: this.Resp1,
+                Valor: 0,
+                PreguntaID: this.PreguntaID,
+              },
+              headers
+            )
+            .then((response) => response.data);
+        })
         .catch((err) => {
           this.error.push(err);
         });
     },
-    updateAnswer4() {
-      // Enviar resp 4
+
+    refreshData() {
       axios
-        .put(
-          "http://localhost:1323/api/app/respuestas/" + this.preguntasId[0],
-          {
-            Resp: this.Resp4,
-            Valor: 5,
-            PreguntaID: this.PreguntaID,
-          },
-          headers
-        )
+        .get("http://localhost:1323/api/app/preguntas", headers)
         .then((response) => {
-          let res = response.data;
-        })
-        .catch((error) => {
-          this.error.push(error);
-        });
-    },
-    updateAnswer3() {
-      // Enviar resp 3
-      axios
-        .put(
-          "http://localhost:1323/api/app/respuestas/" + this.preguntasId[3],
-          {
-            Resp: this.Resp3,
-            Valor: 0,
-            PreguntaID: this.PreguntaID,
-          },
-          headers
-        )
-        .then((response) => {
-          let res = response.data;
-        })
-        .catch((error) => {
-          this.error.push(error);
-        });
-    },
-    updateAnswer2() {
-      // Enviar resp 2
-      axios
-        .put(
-          "http://localhost:1323/api/app/respuestas/" + this.preguntasId[2],
-          {
-            Resp: this.Resp2,
-            Valor: 0,
-            PreguntaID: this.PreguntaID,
-          },
-          headers
-        )
-        .then((response) => {
-          let res = response.data;
-        })
-        .catch((error) => {
-          this.error.push(error);
-        });
-    },
-    updateAnswer1() {
-      // Enviar resp 1
-      axios
-        .put(
-          "http://localhost:1323/api/app/respuestas/" + this.preguntasId[1],
-          {
-            Resp: this.Resp1,
-            Valor: 0,
-            PreguntaID: this.PreguntaID,
-          },
-          headers
-        )
-        .then((response) => {
-          let res = response.data;
-        })
-        .catch((error) => {
-          this.error.push(error);
+          this.preguntas = [];
+          response.data.forEach((element) => {
+            this.preguntas.push({ ID: element.ID, Preg: element.Preg });
+          });
         });
     },
   },
 };
 </script>
-
-/* */

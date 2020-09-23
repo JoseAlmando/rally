@@ -1,8 +1,8 @@
 <template>
-  <div>
+  <div class="">
     <Menu />
-    <div class="flex items-center h-screen justify-center bg-gray-200">
-      <div class="w-7/12 max-w-2xl">
+    <div class="flex items-center  justify-center bg-gray-200">
+      <div class="w-10/12 max-w-2xl">
         <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 mt-10">
           <div class="mb-4">
             <h1 class="text-center text-green-500 text-2xl font-bold mb-2">
@@ -20,7 +20,10 @@
               ipsam. Quo quos aspernatur voluptate laudantium ad molestiae odit
               similique earum reiciendis?
             </h2>
+  
+            <img src="https://picsum.photos/3260/1080" alt="Img de prueba">
           </div>
+         
         </div>
       </div>
     </div>
