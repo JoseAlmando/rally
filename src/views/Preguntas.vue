@@ -283,7 +283,11 @@ export default {
       this.response = [];
     },
 
+<<<<<<< Updated upstream
     async selectPreg(e) {
+=======
+    selectPreg(e) {
+>>>>>>> Stashed changes
       e.preventDefault();
       this.PreguntaID = this.PregSelect;
       this.preguntasId = [];
@@ -451,10 +455,16 @@ export default {
           headers
         )
         .then((res) => {
+<<<<<<< Updated upstream
           console.log(this.preguntasId[0], "p4");
           axios
             .put(
               "http://localhost:1323/api/app/respuestas/" +  parseInt(this.preguntasId[0],10),
+=======
+          axios
+            .put(
+              "http://localhost:1323/api/app/respuestas/" + this.preguntasId[0],
+>>>>>>> Stashed changes
               {
                 Resp: this.Resp4,
                 Valor: 5,
@@ -464,11 +474,17 @@ export default {
             )
             .then((response) => response.data);
           //
+<<<<<<< Updated upstream
           console.log(this.preguntasId[3], "p3");
 
           axios
             .put(
               "http://localhost:1323/api/app/respuestas/" +  parseInt(this.preguntasId[3],10),
+=======
+          axios
+            .put(
+              "http://localhost:1323/api/app/respuestas/" + this.preguntasId[3],
+>>>>>>> Stashed changes
               {
                 Resp: this.Resp3,
                 Valor: 0,
@@ -478,12 +494,18 @@ export default {
             )
             .then((response) => response.data);
           //
+<<<<<<< Updated upstream
 
           console.log(this.preguntasId[2], "p2");
 
           axios
             .put(
               "http://localhost:1323/api/app/respuestas/" +  parseInt(this.preguntasId[2],10),
+=======
+          axios
+            .put(
+              "http://localhost:1323/api/app/respuestas/" + this.preguntasId[2],
+>>>>>>> Stashed changes
               {
                 Resp: this.Resp2,
                 Valor: 0,
@@ -493,10 +515,16 @@ export default {
             )
             .then((response) => response.data);
           //
+<<<<<<< Updated upstream
           console.log(this.preguntasId[1], "p1");
           axios
             .put(
               "http://localhost:1323/api/app/respuestas/" +  parseInt(this.preguntasId[1],10),
+=======
+          axios
+            .put(
+              "http://localhost:1323/api/app/respuestas/" + this.preguntasId[1],
+>>>>>>> Stashed changes
               {
                 Resp: this.Resp1,
                 Valor: 0,

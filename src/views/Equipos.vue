@@ -225,9 +225,10 @@ export default {
       .catch((err) => {
         this.err.push(err);
         console.log("A ver " + err.response.status);
-        if (err.response.status == 401) {
+         if (err.response.status == 401) {
           alert("Cierra e inicia seccion");
           window.localStorage.removeItem("_token");
+          err = [];
         }
       });
   },

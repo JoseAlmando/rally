@@ -2,9 +2,7 @@
   <div class=" bg-gray-200">
     <Menu />
     <div class="flex justify-center items-center flex-col h-screen md:w-full">
-    
       <div class="mb-2 flex justify-around w-8/12">
-      
         <div class="mx-1">
           <input
             type="radio"
@@ -187,7 +185,7 @@ export default {
         if (err.response.status == 401) {
           alert("Cierra e inicia seccion");
           window.localStorage.removeItem("_token");
-         
+          err = [];
         }
         this.err.push(err);
       });
