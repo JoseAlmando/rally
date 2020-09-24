@@ -377,7 +377,7 @@ export default {
     },
 
     async updateQuestion() {
-      this.PreguntaID = this.PregSelect;
+      this.PreguntaID = this.PregSelect; 
       await axios
         .put(
           "http://localhost:1323/api/app/preguntas/" + this.PreguntaID,
@@ -388,7 +388,7 @@ export default {
           headers
         )
         .then((res) => {
-          console.log(this.preguntasId[0], "p4");
+       
           axios
             .put(
               "http://localhost:1323/api/app/respuestas/" +
@@ -403,8 +403,7 @@ export default {
             )
             .then((res) => res.data);
           //
-          console.log(this.preguntasId[3], "p3");
-
+       
           axios
             .put(
               "http://localhost:1323/api/app/respuestas/" +
@@ -419,7 +418,7 @@ export default {
             )
             .then((res) => res.data);
           //
-          console.log(this.preguntasId[2], "p2");
+          
 
           axios
             .put(
@@ -435,7 +434,7 @@ export default {
             )
             .then((res) => res.data);
           //
-          console.log(this.preguntasId[1], "p1");
+      
           axios
             .put(
               "http://localhost:1323/api/app/respuestas/" +
@@ -450,9 +449,9 @@ export default {
             )
             .then((res) => res.data);
         })
-        .catch((err) => {
-          this.error.push(err);
-        });
+        .catch((err) =>this.error.push(err));
+        alert("pregunta actualizada con exito");
+        this.defaultData();
     },
 
     refreshData() {
