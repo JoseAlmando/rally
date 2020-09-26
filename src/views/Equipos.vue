@@ -85,7 +85,7 @@
               </div>
               <div class="mb-4">
                 <the-mask
-masked
+                  masked
                   mask="####-####"
                   required
                   v-model="equipoDetalle.MatriculaE1"
@@ -98,7 +98,7 @@ masked
               </div>
               <div class="mb-4">
                 <the-mask
-masked
+                  masked
                   mask="####-####"
                   required
                   v-model="equipoDetalle.MatriculaE2"
@@ -110,8 +110,8 @@ masked
                 />
               </div>
               <div class="mb-4">
-                <the-mask 
-		masked 
+                <the-mask
+                  masked
                   mask="####-####"
                   v-model="equipoDetalle.MatriculaE3"
                   :maxlength="maxv"
@@ -183,6 +183,7 @@ var token = window.localStorage.getItem("_token");
 var headers = {
   headers: { Authorization: "Bearer " + token },
 };
+var host= "http://localhost:1323";
 export default {
   name: "RG",
   components: {
@@ -208,7 +209,7 @@ export default {
   },
   mounted() {
     axios
-      .get("http://localhost:1323/api/app/equipo", headers)
+      .get(`${host}/api/app/equipo`, headers)
       .then((response) => {
         response.data.forEach((element) => {
           this.equipos.push({
@@ -225,7 +226,7 @@ export default {
       .catch((err) => {
         this.err.push(err);
         console.log("A ver " + err.response.status);
-         if (err.response.status == 401) {
+        if (err.response.status == 401) {
           alert("Cierra e inicia seccion");
           window.localStorage.removeItem("_token");
           err = [];
@@ -282,31 +283,32 @@ export default {
       }
       this.$forceUpdate();
     },
-    sendEquipo() {
-		
+    async sendEquipo() {
       this.equipoDetalle.CodigoGrupo = this.generearUser();
       this.equipoDetalle.ContraGrupo = "pa" + this.generearUser() + "as";
-      axios
+
+      await axios
         .post(
-          "http://localhost:1323/api/app/equipo",
+          `${host}/api/app/equipo`,
           this.equipoDetalle,
           headers
         )
         .then((res) => {
           this.nogrupo = parseInt(res.data.ID, 10);
-          this.refreshData();
-          this.defaultData();
           alert("Equipo insertado correctamente.");
+          this.defaultData();
         })
         .catch((err) => {
           this.err.push(err);
+          alert("Una de las tres matriculas pertenece a otro equipo");
         });
+      this.refreshData();
     },
+
     selectEquipo() {
-      console.log(this.equipoSeleccionado);
       axios
         .get(
-          "http://localhost:1323/api/app/equipo/" + this.equipoSeleccionado,
+          `${host}/api/app/equipo/` + this.equipoSeleccionado,
           headers
         )
         .then((res) => {
@@ -317,16 +319,14 @@ export default {
           this.equipoDetalle.CodigoGrupo = eq.CodigoGrupo;
           this.equipoDetalle.ContraGrupo = eq.ContraGrupo;
           this.nogrupo = eq.ID;
-          console.log(eq);
         })
-        .catch((err) => {
-          this.err.push(err);
-        });
+        .catch((err) => this.err.push(err));
     },
+
     deleteEquipos() {
       axios
         .delete(
-          "http://localhost:1323/api/app/equipo/" + this.equipoSeleccionado,
+          `${host}/api/app/equipo/` + this.equipoSeleccionado,
           headers
         )
         .then((res) => {
@@ -338,29 +338,10 @@ export default {
         })
         .catch((err) => err.response.status);
     },
-    // updateEquipo() {
-    //   axios
-    //     .put(
-    //       "http://localhost:1323/api/app/equipo/" + this.equipoSeleccionado,
-    //       this.equipoDetalle,
-    //       headers
-    //     )
-    //     .then((res) => {
-    //       this.defaultData();
-    //       this.equipoDetalle.CodigoGrupo = null;
-    //       this.equipoDetalle.ContraGrupo = null;
-    //       this.nogrupo = 0;
-    //       this.refreshData();
-    //       alert("Equipo modificado.");
-    //     })
-    //     .catch((err) => err.response.status);
-    //   this.deleteEquipos();
-    //   this.sendEquipo();
-    //   alert("Equipo modificado.");
-    // },
+
     refreshData() {
       axios
-        .get("http://localhost:1323/api/app/equipo", headers)
+        .get(`${host}/api/app/equipo`, headers)
         .then((response) => {
           this.equipos = [];
           response.data.forEach((element) => {

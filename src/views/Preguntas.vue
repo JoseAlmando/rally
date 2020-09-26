@@ -2,24 +2,50 @@
   <div>
     <Menu />
     <div class="bg-gray-200">
-      <div class="flex justify-center items-center h-screen bg-gray-200 md:w-full">
+      <div
+        class="flex justify-center items-center h-screen bg-gray-200 md:w-full"
+      >
         <div class="md:w-7/12 p-2">
           <div class="mb-2 flex justify-around">
             <div class="mx-1">
-              <input type="radio" id="nueva_pregunta" value="nueva_pregunta" v-model="picked" />
-              <label for="nueva_pregunta" class="font-bold mb-2">Nueva pregunta</label>
+              <input
+                type="radio"
+                id="nueva_pregunta"
+                value="nueva_pregunta"
+                v-model="picked"
+              />
+              <label for="nueva_pregunta" class="font-bold mb-2"
+                >Nueva pregunta</label
+              >
             </div>
 
             <div class="mx-1">
-              <input type="radio" id="editar_pregunta" value="editar_pregunta" v-model="picked" />
-              <label for="editar_pregunta" class="font-bold mb-2">Editar pregunta</label>
+              <input
+                type="radio"
+                id="editar_pregunta"
+                value="editar_pregunta"
+                v-model="picked"
+              />
+              <label for="editar_pregunta" class="font-bold mb-2"
+                >Editar pregunta</label
+              >
             </div>
             <div class="mx-1">
-              <input type="radio" id="eliminar_pregunta" value="eliminar_pregunta" v-model="picked" />
-              <label for="eliminar_pregunta" class="font-bold mb-2">Eliminar pregunta</label>
+              <input
+                type="radio"
+                id="eliminar_pregunta"
+                value="eliminar_pregunta"
+                v-model="picked"
+              />
+              <label for="eliminar_pregunta" class="font-bold mb-2"
+                >Eliminar pregunta</label
+              >
             </div>
           </div>
-          <div v-if="picked != 'nueva_pregunta' && picked != null" class="flex justify-around">
+          <div
+            v-if="picked != 'nueva_pregunta' && picked != null"
+            class="flex justify-around"
+          >
             <select
               required
               v-model="PregSelect"
@@ -36,7 +62,9 @@
             <button
               class="bg-green-500 w-3/12 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
               @click="selectPreg"
-            >Seleccionar</button>
+            >
+              Seleccionar
+            </button>
           </div>
 
           <form
@@ -46,11 +74,17 @@
             class="bg-white shadow-xl rounded px-8 pt-6 pb-8 mb-4 mt-8"
           >
             <div class="mb-4">
-              <h1 class="text-center text-green-500 text-xl font-bold mb-2">Registro de preguntas</h1>
+              <h1 class="text-center text-green-500 text-xl font-bold mb-2">
+                Registro de preguntas
+              </h1>
             </div>
             <div class="flex justify-around mb-4">
               <div class="w-4/6">
-                <label class="block text-gra y-700 text-md font-bold mb-2" for="username">Pregunta</label>
+                <label
+                  class="block text-gra y-700 text-md font-bold mb-2"
+                  for="username"
+                  >Pregunta</label
+                >
                 <input
                   required
                   class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -61,13 +95,19 @@
                 />
               </div>
               <div class="w-2/6 ml-2">
-                <label class="block text-gray-700 text-md font-bold mb-2" for="estacion">Estación</label>
+                <label
+                  class="block text-gray-700 text-md font-bold mb-2"
+                  for="estacion"
+                  >Estación</label
+                >
                 <select
                   required
                   v-model="EstacionID"
                   class="block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
                 >
-                  <option disabled value>Estacion actual: {{ Estacion }}</option>
+                  <option disabled value
+                    >Estacion actual: {{ Estacion }}</option
+                  >
                   <option
                     v-for="elemento in estaciones"
                     v-bind:key="elemento.ID"
@@ -82,7 +122,8 @@
               <label
                 class="block text-gray-700 text-md font-bold mb-2"
                 for="estacion"
-              >Respuestas incorrectas</label>
+                >Respuestas incorrectas</label
+              >
 
               <div class="flex justify-between mb-4">
                 <div class="w-4/12 mr-2">
@@ -120,7 +161,8 @@
                 <label
                   class="block text-gray-700 text-md font-bold mb-2"
                   for="estacion"
-                >Respuesta Correcta</label>
+                  >Respuesta Correcta</label
+                >
                 <input
                   required
                   class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -165,6 +207,7 @@ var token = window.localStorage.getItem("_token");
 var headers = {
   headers: { Authorization: "Bearer " + token },
 };
+var host = "http://localhost:1323";
 var respuestas2 = null;
 export default {
   name: "Preguntas",
@@ -181,7 +224,7 @@ export default {
       Resp4: null,
       cantPreg: 0,
       estaciones: [],
-      error: [],
+      err: [],
       res: [],
       picked: null,
       preguntas: [],
@@ -191,9 +234,9 @@ export default {
     };
   },
   mounted() {
-    // Obtener numero de estaciones
+    // Obtener estaciones
     axios
-      .get("http://localhost:1323/api/app/estacion", headers)
+      .get(`${host}/api/app/estacion`, headers)
       .then((res) => {
         res.data.forEach((element) => {
           this.estaciones.push({
@@ -203,11 +246,11 @@ export default {
         });
       })
       .catch((err) => {
-        this.error.push(err);
+        this.err.push(err);
       });
-    // Obtener numero de pregunta
+    // Obtener preguntas
     axios
-      .get("http://localhost:1323/api/app/preguntas", headers)
+      .get(`${host}/api/app/preguntas`, headers)
       .then((res) => {
         if (res.data.length <= 0) {
           this.cantPreg = 1;
@@ -218,18 +261,16 @@ export default {
           this.preguntas.push({ ID: element.ID, Preg: element.Preg });
         });
       })
-      .catch((error) => {
-        this.error.push(error);
-        console.log(this.error);
-        if (error.res.status == 401) {
+      .catch((err) => {
+        if (err.res.status == 401) {
           alert("Cierra e inicia seccion");
           window.localStorage.removeItem("_token");
-          error = [];
+          err = [];
         }
       });
   },
+
   methods: {
-    
     defaultData() {
       this.Preg = null;
       this.EstacionID = null;
@@ -238,7 +279,7 @@ export default {
       this.Resp3 = null;
       this.Resp4 = null;
       this.cantPreg = 0;
-      this.error = [];
+      this.err = [];
       this.res = [];
     },
 
@@ -248,7 +289,7 @@ export default {
       this.preguntasId = [];
       await axios
         .get(
-          "http://localhost:1323/api/app/preguntas/" + this.PreguntaID,
+          `${host}/api/app/preguntas/` + this.PreguntaID,
           headers
         )
         .then((res) => {
@@ -256,14 +297,14 @@ export default {
           // Get ESTACION
           axios
             .get(
-              "http://localhost:1323/api/app/estacion/" + res.data.EstacionID,
+              `${host}/api/app/estacion/` + res.data.EstacionID,
               headers
             )
             .then((res) => {
               alert("Abrir el despliegue de estaciones para ver la acual");
               this.Estacion = res.data.nombre;
             })
-            .catch((err) => this.error.push(err));
+            .catch((err) => this.err.push(err));
 
           let respuestas = res.data.Respuestas;
           let i = 0;
@@ -282,7 +323,7 @@ export default {
           this.Resp3 = respuestas[2].Resp;
           this.preguntasId.push(parseInt(respuestas[2].ID, 10));
         })
-        .catch((err) => this.error.push(err));
+        .catch((err) => this.err.push(err));
     },
 
     async formSubmitQuestion(e) {
@@ -301,7 +342,7 @@ export default {
       // Enviar pregunta
       await axios
         .post(
-          "http://localhost:1323/api/app/preguntas",
+          `${host}/api/app/preguntas`,
           {
             Preg: this.Preg,
             EstacionID: parseInt(this.EstacionID, 10),
@@ -313,7 +354,7 @@ export default {
           // Send the first Answer
           axios
             .post(
-              "http://localhost:1323/api/app/respuestas",
+              `${host}/api/app/respuestas`,
               {
                 Resp: this.Resp1,
                 Valor: 0,
@@ -325,7 +366,7 @@ export default {
           //Send the second Answer
           axios
             .post(
-              "http://localhost:1323/api/app/respuestas",
+              `${host}/api/app/respuestas`,
               {
                 Resp: this.Resp2,
                 Valor: 0,
@@ -337,7 +378,7 @@ export default {
           //Send the thirty Answer
           axios
             .post(
-              "http://localhost:1323/api/app/respuestas",
+              `${host}/api/app/respuestas`,
               {
                 Resp: this.Resp3,
                 Valor: 0,
@@ -349,7 +390,7 @@ export default {
           //Send the Fourth Answer
           axios
             .post(
-              "http://localhost:1323/api/app/respuestas",
+              `${host}/api/app/respuestas`,
               {
                 Resp: this.Resp4,
                 Valor: 5,
@@ -359,7 +400,7 @@ export default {
             )
             .then((res) => res.data);
         })
-        .catch((error) => this.error.push(error));
+        .catch((err) => this.err.push(err));
       alert("Pregunta insertada correctamente.");
       this.defaultData();
     },
@@ -368,11 +409,11 @@ export default {
       this.PreguntaID = this.PregSelect;
       axios
         .delete(
-          "http://localhost:1323/api/app/preguntas/" + this.PreguntaID,
+          `${host}/api/app/preguntas/` + this.PreguntaID,
           headers
         )
         .then((res) => alert("Pregunta eliminada correctamente."))
-        .catch((error) => this.error.push(error));
+        .catch((err) => this.err.push(err));
       this.defaultData();
     },
 
@@ -380,7 +421,7 @@ export default {
       this.PreguntaID = this.PregSelect; 
       await axios
         .put(
-          "http://localhost:1323/api/app/preguntas/" + this.PreguntaID,
+          `${host}/api/app/preguntas/` + this.PreguntaID,
           {
             Preg: this.Preg,
             EstacionID: parseInt(this.EstacionID, 10),
@@ -391,7 +432,7 @@ export default {
        
           axios
             .put(
-              "http://localhost:1323/api/app/respuestas/" +
+              `${host}/api/app/respuestas/` +
                 parseInt(this.preguntasId[0], 10),
 
               {
@@ -406,7 +447,7 @@ export default {
        
           axios
             .put(
-              "http://localhost:1323/api/app/respuestas/" +
+              `${host}/api/app/respuestas/` +
                 parseInt(this.preguntasId[3], 10),
 
               {
@@ -422,7 +463,7 @@ export default {
 
           axios
             .put(
-              "http://localhost:1323/api/app/respuestas/" +
+              `${host}/api/app/respuestas/` +
                 parseInt(this.preguntasId[2], 10),
 
               {
@@ -437,7 +478,7 @@ export default {
       
           axios
             .put(
-              "http://localhost:1323/api/app/respuestas/" +
+              `${host}/api/app/respuestas/` +
                 parseInt(this.preguntasId[1], 10),
 
               {
@@ -449,14 +490,15 @@ export default {
             )
             .then((res) => res.data);
         })
-        .catch((err) =>this.error.push(err));
-        alert("pregunta actualizada con exito");
-        this.defaultData();
+
+        .catch((err) => {
+          this.err.push(err);
+        });
     },
 
     refreshData() {
       axios
-        .get("http://localhost:1323/api/app/preguntas", headers)
+        .get(`${host}/api/app/preguntas`, headers)
         .then((res) => {
           this.preguntas = [];
           res.data.forEach((element) => {
