@@ -33,15 +33,15 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="dato in info.slice(0, 5)" :key="dato.id">
+                <tr v-for="dato in info.slice(0, 10)" :key="dato.id">
                   <td class="border px-4 py-2 px-4 py-2 text-center">
-                    <strong>{{ dato.id }}</strong>
+                    <strong>{{ dato.ID }}</strong>
                   </td>
                   <td class="border px-4 py-2 px-4 py-2 text-center">
-                    {{ dato.name }}
+                    {{ dato.Puntaje }}
                   </td>
                   <td class="border px-4 py-2 px-4 py-2 text-center">
-                    {{ dato.address.street }}
+                    {{ dato.Transcurso }}
                   </td>
                 </tr>
               </tbody>
@@ -57,7 +57,10 @@
 <script>
 import Menu from "../components/Menu";
 import axios from "axios";
-
+const token = window.localStorage.getItem("_token");
+var headers = {
+  headers: { Authorization: "Bearer " + token },
+};
 export default {
   name: "Ganadores",
   components: {
@@ -65,34 +68,22 @@ export default {
   },
   data() {
     return {
-      datos: [
-        {
-          Grupo: "1",
-          Tiempo: "x",
-          Puntaje: "50",
-        },
-        {
-          Grupo: "2",
-          Tiempo: "x",
-          Puntaje: "50",
-        },
-      ],
       info: [],
     };
   },
   mounted() {
     axios
-      .get("http://localhost:1323/usuarios")
-      .then((response) => (this.info = response.data))
+      .get("http://localhost:1323/api/app/ganadores", headers)
+      .then((response) => 
+        this.info = response.data
+      )
       .catch((error) => {
-        console.log(error);
-        this.errored = true;
         if (error.response.status == 401) {
           alert("Cierra e inicia seccion");
           window.localStorage.removeItem("_token");
+          error = [];
         }
-      })
-      .finally(() => (this.loading = false));
+      });
   },
 };
 </script>

@@ -207,6 +207,7 @@ var token = window.localStorage.getItem("_token");
 var headers = {
   headers: { Authorization: "Bearer " + token },
 };
+var host = "http://localhost:1323";
 var respuestas2 = null;
 export default {
   name: "Preguntas",
@@ -235,7 +236,7 @@ export default {
   mounted() {
     // Obtener estaciones
     axios
-      .get("http://localhost:1323/api/app/estacion", headers)
+      .get(`${host}/api/app/estacion`, headers)
       .then((res) => {
         res.data.forEach((element) => {
           this.estaciones.push({
@@ -249,7 +250,7 @@ export default {
       });
     // Obtener preguntas
     axios
-      .get("http://localhost:1323/api/app/preguntas", headers)
+      .get(`${host}/api/app/preguntas`, headers)
       .then((res) => {
         if (res.data.length <= 0) {
           this.cantPreg = 1;
@@ -261,8 +262,6 @@ export default {
         });
       })
       .catch((err) => {
-        this.err.push(err);
-        console.log(this.err);
         if (err.res.status == 401) {
           alert("Cierra e inicia seccion");
           window.localStorage.removeItem("_token");
@@ -290,7 +289,7 @@ export default {
       this.preguntasId = [];
       await axios
         .get(
-          "http://localhost:1323/api/app/preguntas/" + this.PreguntaID,
+          `${host}/api/app/preguntas/` + this.PreguntaID,
           headers
         )
         .then((res) => {
@@ -298,7 +297,7 @@ export default {
           // Get ESTACION
           axios
             .get(
-              "http://localhost:1323/api/app/estacion/" + res.data.EstacionID,
+              `${host}/api/app/estacion/` + res.data.EstacionID,
               headers
             )
             .then((res) => {
@@ -343,7 +342,7 @@ export default {
       // Enviar pregunta
       await axios
         .post(
-          "http://localhost:1323/api/app/preguntas",
+          `${host}/api/app/preguntas`,
           {
             Preg: this.Preg,
             EstacionID: parseInt(this.EstacionID, 10),
@@ -355,7 +354,7 @@ export default {
           // Send the first Answer
           axios
             .post(
-              "http://localhost:1323/api/app/respuestas",
+              `${host}/api/app/respuestas`,
               {
                 Resp: this.Resp1,
                 Valor: 0,
@@ -367,7 +366,7 @@ export default {
           //Send the second Answer
           axios
             .post(
-              "http://localhost:1323/api/app/respuestas",
+              `${host}/api/app/respuestas`,
               {
                 Resp: this.Resp2,
                 Valor: 0,
@@ -379,7 +378,7 @@ export default {
           //Send the thirty Answer
           axios
             .post(
-              "http://localhost:1323/api/app/respuestas",
+              `${host}/api/app/respuestas`,
               {
                 Resp: this.Resp3,
                 Valor: 0,
@@ -391,7 +390,7 @@ export default {
           //Send the Fourth Answer
           axios
             .post(
-              "http://localhost:1323/api/app/respuestas",
+              `${host}/api/app/respuestas`,
               {
                 Resp: this.Resp4,
                 Valor: 5,
@@ -410,7 +409,7 @@ export default {
       this.PreguntaID = this.PregSelect;
       axios
         .delete(
-          "http://localhost:1323/api/app/preguntas/" + this.PreguntaID,
+          `${host}/api/app/preguntas/` + this.PreguntaID,
           headers
         )
         .then((res) => alert("Pregunta eliminada correctamente."))
@@ -422,7 +421,7 @@ export default {
       this.PreguntaID = this.PregSelect;
       await axios
         .put(
-          "http://localhost:1323/api/app/preguntas/" + this.PreguntaID,
+          `${host}/api/app/preguntas/` + this.PreguntaID,
           {
             Preg: this.Preg,
             EstacionID: parseInt(this.EstacionID, 10),
@@ -433,7 +432,7 @@ export default {
           console.log(this.preguntasId[0], "p4");
           axios
             .put(
-              "http://localhost:1323/api/app/respuestas/" +
+              `${host}/api/app/respuestas/` +
                 parseInt(this.preguntasId[0], 10),
 
               {
@@ -449,7 +448,7 @@ export default {
 
           axios
             .put(
-              "http://localhost:1323/api/app/respuestas/" +
+              `${host}/api/app/respuestas/` +
                 parseInt(this.preguntasId[3], 10),
 
               {
@@ -465,7 +464,7 @@ export default {
 
           axios
             .put(
-              "http://localhost:1323/api/app/respuestas/" +
+              `${host}/api/app/respuestas/` +
                 parseInt(this.preguntasId[2], 10),
 
               {
@@ -480,7 +479,7 @@ export default {
           console.log(this.preguntasId[1], "p1");
           axios
             .put(
-              "http://localhost:1323/api/app/respuestas/" +
+              `${host}/api/app/respuestas/` +
                 parseInt(this.preguntasId[1], 10),
 
               {
@@ -499,7 +498,7 @@ export default {
 
     refreshData() {
       axios
-        .get("http://localhost:1323/api/app/preguntas", headers)
+        .get(`${host}/api/app/preguntas`, headers)
         .then((res) => {
           this.preguntas = [];
           res.data.forEach((element) => {

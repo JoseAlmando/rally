@@ -62,6 +62,7 @@
 <script>
 import Menu from "../components/Menu";
 import axios from "axios";
+var host = "http://localhost:1323";
 export default {
   name: "Login",
   components: {
@@ -80,7 +81,7 @@ export default {
       e.preventDefault();
       console.log(this.LoginDetail);
       axios
-        .post("http://localhost:1323/api/loginmaestros", this.LoginDetail)
+        .post(`${host}/api/loginmaestros`, this.LoginDetail)
         .then((res) => {
           const token = res.data.token;
           window.localStorage.removeItem("_token");

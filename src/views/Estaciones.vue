@@ -151,6 +151,7 @@ const token = window.localStorage.getItem("_token");
 var headers = {
   headers: { Authorization: "Bearer " + token },
 };
+var host = "http://localhost:1323";
 export default {
   name: "Estaciones",
   components: {
@@ -171,7 +172,7 @@ export default {
   },
   mounted() {
     axios
-      .get("http://localhost:1323/api/app/estacion", headers)
+      .get(`${host}/api/app/estacion`, headers)
       .then((response) => {
         response.data.forEach((element) => {
           this.estaciones.push({
@@ -191,21 +192,23 @@ export default {
       });
   },
   methods: {
-    formSubmit(e) {
+    async formSubmit(e) {
       e.preventDefault();
       if (this.picked == "nueva_estacion") {
-        this.sendEstacion();
+        await this.sendEstacion();
+        alert("Estacion insertada correctamente.");
+
       } else if (this.picked == "editar_estacion") {
         if (this.EstacionSeleccionada != null) {
-          this.updateEstacion();
-          alert("actuzli");
+          await this.updateEstacion();
+          alert("Estacion actualizada correctamente.");
         } else {
           alert("Debes seleccionar una estacion");
         }
       } else if (this.picked == "eliminar_estacion") {
         if (this.EstacionSeleccionada != null) {
-          this.deleteEstacion();
-          alert("ELiminada");
+          await this.deleteEstacion();
+          alert("Estacion eLiminada correctamente");
         } else {
           alert("Debes seleccionar una estacion");
         }
@@ -216,14 +219,12 @@ export default {
     sendEstacion() {
       axios
         .post(
-          "http://localhost:1323/api/app/estacion",
+          `${host}/api/app/estacion`,
           this.estacionDatos,
           headers
         )
         .then((res) => {
           this.response = res.data;
-          console.log(this.response);
-          alert("Estacion insertada brou");
           this.refreshData();
           this.dataDefault();
         })
@@ -238,7 +239,7 @@ export default {
     selectEstacion() {
       axios
         .get(
-          "http://localhost:1323/api/app/estacion/" + this.EstacionSeleccionada,
+          `${host}/api/app/estacion/` + this.EstacionSeleccionada,
           headers
         )
         .then((res) => {
@@ -253,7 +254,7 @@ export default {
     updateEstacion() {
       axios
         .put(
-          "http://localhost:1323/api/app/estacion/" + this.EstacionSeleccionada,
+          `${host}/api/app/estacion/` + this.EstacionSeleccionada,
           this.estacionDatos,
           headers
         )
@@ -266,7 +267,7 @@ export default {
     deleteEstacion() {
       axios
         .delete(
-          "http://localhost:1323/api/app/estacion/" + this.EstacionSeleccionada,
+          `${host}/api/app/estacion/` + this.EstacionSeleccionada,
           headers
         )
         .then((res) => {
@@ -279,7 +280,7 @@ export default {
     },
     refreshData() {
       axios
-        .get("http://localhost:1323/api/app/estacion", headers)
+        .get(`${host}/api/app/estacion`, headers)
         .then((response) => {
           this.estaciones = [];
           response.data.forEach((element) => {

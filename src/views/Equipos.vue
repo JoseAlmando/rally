@@ -183,6 +183,7 @@ var token = window.localStorage.getItem("_token");
 var headers = {
   headers: { Authorization: "Bearer " + token },
 };
+var host= "http://localhost:1323";
 export default {
   name: "RG",
   components: {
@@ -208,7 +209,7 @@ export default {
   },
   mounted() {
     axios
-      .get("http://localhost:1323/api/app/equipo", headers)
+      .get(`${host}/api/app/equipo`, headers)
       .then((response) => {
         response.data.forEach((element) => {
           this.equipos.push({
@@ -288,7 +289,7 @@ export default {
 
       await axios
         .post(
-          "http://localhost:1323/api/app/equipo",
+          `${host}/api/app/equipo`,
           this.equipoDetalle,
           headers
         )
@@ -307,7 +308,7 @@ export default {
     selectEquipo() {
       axios
         .get(
-          "http://localhost:1323/api/app/equipo/" + this.equipoSeleccionado,
+          `${host}/api/app/equipo/` + this.equipoSeleccionado,
           headers
         )
         .then((res) => {
@@ -325,7 +326,7 @@ export default {
     deleteEquipos() {
       axios
         .delete(
-          "http://localhost:1323/api/app/equipo/" + this.equipoSeleccionado,
+          `${host}/api/app/equipo/` + this.equipoSeleccionado,
           headers
         )
         .then((res) => {
@@ -340,7 +341,7 @@ export default {
 
     refreshData() {
       axios
-        .get("http://localhost:1323/api/app/equipo", headers)
+        .get(`${host}/api/app/equipo`, headers)
         .then((response) => {
           this.equipos = [];
           response.data.forEach((element) => {
