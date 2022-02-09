@@ -3,7 +3,7 @@
     <Menu />
     <div class="bg-gray-200">
       <div
-        class="flex justify-center flex-col items-center h-screen bg-gray-200 md:w-full"
+        class="flex justify-center flex-col items-center h-screen  bg-gray-200 md:w-full"
       >
         <div class="mb-2 flex justify-between w-4/12">
           <div class="mx-1">
@@ -55,8 +55,8 @@
           >
             <option
               v-for="equipo in equipos"
-              v-bind:key="equipo.ID"
-              v-bind:value="equipo.ID"
+              :key="equipo.ID"
+              :value="equipo.ID"
             >
               <span> {{ equipo.ID }} - {{ equipo.Matriculas }} </span>
             </option>
@@ -179,11 +179,11 @@
 import Menu from "../components/Menu";
 
 import axios from "axios";
-var token = window.localStorage.getItem("_token");
-var headers = {
+const token = window.localStorage.getItem("_token");
+const headers = {
   headers: { Authorization: "Bearer " + token },
 };
-var host= "http://localhost:1323";
+var host = "http://localhost:1323";
 export default {
   name: "RG",
   components: {
@@ -288,11 +288,7 @@ export default {
       this.equipoDetalle.ContraGrupo = "pa" + this.generearUser() + "as";
 
       await axios
-        .post(
-          `${host}/api/app/equipo`,
-          this.equipoDetalle,
-          headers
-        )
+        .post(`${host}/api/app/equipo`, this.equipoDetalle, headers)
         .then((res) => {
           this.nogrupo = parseInt(res.data.ID, 10);
           alert("Equipo insertado correctamente.");
@@ -307,10 +303,7 @@ export default {
 
     selectEquipo() {
       axios
-        .get(
-          `${host}/api/app/equipo/` + this.equipoSeleccionado,
-          headers
-        )
+        .get(`${host}/api/app/equipo/` + this.equipoSeleccionado, headers)
         .then((res) => {
           let eq = res.data;
           this.equipoDetalle.MatriculaE1 = eq.MatriculaE1;
@@ -325,10 +318,7 @@ export default {
 
     deleteEquipos() {
       axios
-        .delete(
-          `${host}/api/app/equipo/` + this.equipoSeleccionado,
-          headers
-        )
+        .delete(`${host}/api/app/equipo/` + this.equipoSeleccionado, headers)
         .then((res) => {
           this.defaultData();
           this.equipoDetalle.CodigoGrupo = null;
@@ -340,22 +330,20 @@ export default {
     },
 
     refreshData() {
-      axios
-        .get(`${host}/api/app/equipo`, headers)
-        .then((response) => {
-          this.equipos = [];
-          response.data.forEach((element) => {
-            this.equipos.push({
-              ID: element.ID,
-              Matriculas:
-                element.MatriculaE1 +
-                " " +
-                element.MatriculaE2 +
-                " " +
-                element.MatriculaE3,
-            });
+      axios.get(`${host}/api/app/equipo`, headers).then((response) => {
+        this.equipos = [];
+        response.data.forEach((element) => {
+          this.equipos.push({
+            ID: element.ID,
+            Matriculas:
+              element.MatriculaE1 +
+              " " +
+              element.MatriculaE2 +
+              " " +
+              element.MatriculaE3,
           });
         });
+      });
     },
   },
 };
